@@ -9,7 +9,7 @@ links = [
     rx.link(
         rx.icon(tag="link"),
         "Manage Role Assignment",
-        href="/dashboard",
+        href="/manage-role-assignments",
         padding="1em",
         width="100%",
     ),

@@ -8,6 +8,7 @@ from .pages import (
     project_details,
     ticket_details,
     tickets,
+    manage_role_assignment,
 )
 from .states import (
     State,
@@ -28,6 +29,10 @@ def index() -> rx.Component:
             rx.link(
                 "Dashboard",
                 href="/dashboard",
+            ),
+            rx.link(
+                "Manage role assignment",
+                href="/manage-role-assignments",
             ),
             rx.link(
                 "Manage project users",
@@ -71,4 +76,9 @@ app.add_page(
     on_load=ProjectTicketState.get_ticket_details(),
 )
 app.add_page(tickets, route="/tickets", on_load=TicketsState.get_all_tickets())
+app.add_page(
+    manage_role_assignment,
+    route="/manage-role-assignments",
+    on_load=State.check_login(),
+)
 app.compile()
