@@ -107,10 +107,12 @@ def comment_section(**props) -> rx.Component:
         rx.form(
             rx.text_area(
                 placeholder="Add a comment",
+                on_blur=ProjectTicketState.set_new_comment,
                 rows=5,
                 cols=50,
             ),
             rx.button("Add", type_="submit"),
+            on_submit=ProjectTicketState.handle_add_comment_click,
             display="flex",
             align_items="baseline",
         ),

@@ -64,7 +64,6 @@ class ManageProjectUsersState(State):
         with rx.session() as session:
             project = session.query(Project).get(project_id)
             self.project_members_in_view = project.members
-        print(self.project_members_in_view)
 
     @rx.var
     def project_options(self) -> list:

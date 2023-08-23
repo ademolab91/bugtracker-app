@@ -26,3 +26,16 @@ class CommentOut(rx.Base):
     content: str
     commenter: Member
     created_at: str
+
+
+class TicketOut(rx.Base):
+    """Ticket out"""
+
+    id: str
+    title: str
+    assigned_developer_name: str
+    project_name: str
+    ticket_type: str
+    priority: str
+    status: str
+    created_at: str

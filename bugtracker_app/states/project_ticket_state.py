@@ -24,6 +24,8 @@ class ProjectTicketState(ProjectDetailsState):
     ticket_created_at: str = ""
     ticket_updated_at: str = ""
 
+    new_comment: str = ""
+
     def get_ticket_details(self):
         """Get ticket"""
 
@@ -77,3 +79,21 @@ class ProjectTicketState(ProjectDetailsState):
                             session.query(User).get(item.present_value).full_name
                         )
         return history
+
+    def handle_add_comment_click(self):
+        """Handle add comment button click"""
+
+        from ..models import Comment
+
+        with rx.session() as session:
+            session.add(
+                Comment(
+                    content=self.new_comment,
+                    ticket_id=self.ticket_id,
+                    commenter_id=self.user.id,
+                )
+            )
+            session.commit()
+            self.comments = (
+                session.query(Comment).where(Comment.ticket_id == self.ticket_id).all()
+            )

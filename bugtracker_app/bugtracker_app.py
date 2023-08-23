@@ -7,8 +7,15 @@ from .pages import (
     my_projects,
     project_details,
     ticket_details,
+    tickets,
 )
-from .states import State, DashBoardState, ProjectDetailsState, ProjectTicketState
+from .states import (
+    State,
+    DashBoardState,
+    ProjectDetailsState,
+    ProjectTicketState,
+    TicketsState,
+)
 from .components.components import home_header
 
 import reflex as rx
@@ -29,6 +36,10 @@ def index() -> rx.Component:
             rx.link(
                 "My projects",
                 href="/projects",
+            ),
+            rx.link(
+                "My Tickets",
+                href="/tickets",
             ),
         ),
         display="flex",
@@ -59,4 +70,5 @@ app.add_page(
     route="/projects/details/ticket",
     on_load=ProjectTicketState.get_ticket_details(),
 )
+app.add_page(tickets, route="/tickets", on_load=TicketsState.get_all_tickets())
 app.compile()

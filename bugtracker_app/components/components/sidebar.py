@@ -30,7 +30,7 @@ links = [
     rx.link(
         rx.icon(tag="link"),
         "My Tickets",
-        href="/dashboard",
+        href="/tickets",
         padding="1em",
         width="100%",
     ),
