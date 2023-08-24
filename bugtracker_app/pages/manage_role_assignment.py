@@ -29,6 +29,8 @@ class ManageRoleAssignmentState(AuthState):
             if self.disable(user):
                 self.option = ""
                 return rx.window_alert("Cannot assign ADMIN")
+            if self.option == "":
+                return rx.window_alert("Please select a valid role")
             user.role = self.option
             session.add(user)
             session.commit()

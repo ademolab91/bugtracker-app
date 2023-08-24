@@ -40,7 +40,7 @@ class ProjectTicketState(ProjectDetailsState):
             self.ticket_ticket_type = ticket.ticket_type
             self.ticket_status = ticket.status
             self.ticket_assigned_developer = (
-                session.query(User).get(ticket.assigned_developer_id).full_name
+                session.query(User).get(ticket.assigned_developer_id).email
             )
             self.ticket_submitter = (
                 session.query(User).get(ticket.submitter_id).full_name
@@ -68,16 +68,16 @@ class ProjectTicketState(ProjectDetailsState):
                 .where(TicketHistory.ticket_id == self.ticket_id)
                 .all()
             )
-            for item in history:
-                if item.action == Action.ASSIGNED_DEVELOPER_CHANGE:
-                    if item.previous_value:
-                        item.previous_value = (
-                            session.query(User).get(item.previous_value).full_name
-                        )
-                    if item.present_value:
-                        item.present_value = (
-                            session.query(User).get(item.present_value).full_name
-                        )
+            # for item in history:
+            #     if item.action == Action.ASSIGNED_DEVELOPER_CHANGE:
+            #         if item.previous_value:
+            #             item.previous_value = (
+            #                 session.query(User).where(User.email == item.previous_value).full_name
+            #             )
+            #         if item.present_value:
+            #             item.present_value = (
+            #                 session.query(User).get(item.present_value).full_name
+            #             )
         return history
 
     def handle_add_comment_click(self):

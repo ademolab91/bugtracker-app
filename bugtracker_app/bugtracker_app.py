@@ -9,6 +9,8 @@ from .pages import (
     ticket_details,
     tickets,
     manage_role_assignment,
+    edit_project,
+    edit_project_ticket,
 )
 from .states import (
     State,
@@ -79,6 +81,12 @@ app.add_page(tickets, route="/tickets", on_load=TicketsState.get_all_tickets())
 app.add_page(
     manage_role_assignment,
     route="/manage-role-assignments",
+    on_load=State.check_login(),
+)
+app.add_page(edit_project, route="/projects/details/edit", on_load=State.check_login())
+app.add_page(
+    edit_project_ticket,
+    route="/projects/details/ticket/edit",
     on_load=State.check_login(),
 )
 app.compile()

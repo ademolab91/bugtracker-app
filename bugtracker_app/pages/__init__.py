@@ -6,3 +6,5 @@ from .project_details import project_details
 from .ticket_details import ticket_details
 from .tickets import tickets
 from .manage_role_assignment import manage_role_assignment
+from .edit_project import edit_project
+from .edit_project_ticket import edit_project_ticket

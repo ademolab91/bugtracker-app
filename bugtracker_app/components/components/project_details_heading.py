@@ -13,10 +13,10 @@ def project_details_heading(**props) -> rx.Component:
                 rx.text(" | "),
                 rx.cond(
                     ProjectDetailsState.is_admin,
-                    rx.link("Edit", href="/edit-project"),
+                    rx.link("Edit", href="/project/details/edit"),
                     rx.cond(
                         ProjectDetailsState.is_assigned_admin,
-                        rx.link("Edit", href="/edit-project"),
+                        rx.link("Edit", href="/project/details/edit"),
                     ),
                 ),
             ),

@@ -14,8 +14,8 @@ def project_details():
         rx.box(
             project_details_heading(margin_bottom="3em"),
             rx.box(
-                assigned_members(width="10%"),
-                ticket_list(width="10%"),
+                assigned_members(),
+                ticket_list(),
                 display="grid",
                 grid_template_columns="auto auto",
                 gap="3em",
