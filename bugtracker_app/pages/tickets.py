@@ -25,7 +25,7 @@ def tickets():
                 ),
                 rx.tbody(
                     rx.foreach(
-                        TicketsState.tickets,
+                        TicketsState.tkts,
                         lambda ticket: rx.tr(
                             rx.td(ticket.title),
                             rx.td(ticket.project_name),
@@ -35,14 +35,17 @@ def tickets():
                             rx.td(ticket.ticket_type),
                             rx.td(ticket.created_at),
                             rx.td(
-                                rx.list(
-                                    rx.list_item(
-                                        rx.link("Edit / Assign", href="/tickets/edit")
+                                rx.hstack(
+                                    rx.link(
+                                        "Details",
+                                        href="/projects/details/ticket",
+                                        on_click=lambda: TicketsState.set_ticket_id(
+                                            ticket.id
+                                        ),
                                     ),
-                                    rx.list_item(
-                                        rx.link("Details", href="/tickets/details")
-                                    ),
-                                )
+                                    rx.text(" | "),
+                                    rx.button(rx.icon(tag="delete"), on_click=lambda: TicketsState.delete_ticket(ticket.id))
+                                ),
                             ),
                         ),
                     ),

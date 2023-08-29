@@ -6,9 +6,11 @@ from ..manage_project_users_state import Member
 class AttachmentOut(rx.Base):
     """Attachment out"""
 
+    id: str
     file_name: str
     description: str
     file_path: str
+    created_at: str
 
 
 class TicketHistoryOut(rx.Base):
@@ -23,6 +25,7 @@ class TicketHistoryOut(rx.Base):
 class CommentOut(rx.Base):
     """Comment out"""
 
+    id: str
     content: str
     commenter: Member
     created_at: str

@@ -1,13 +1,14 @@
 from .auth import AuthState
+from .project_details_state import ProjectDetailsState
 import reflex as rx
 from ..models import Ticket, User, Project, UserProject
 from .schemas import TicketOut
 
 
-class TicketsState(AuthState):
+class TicketsState(ProjectDetailsState):
     """All ticket state"""
 
-    tickets: list[TicketOut] = []
+    tkts: list[TicketOut] = []
 
     def get_all_tickets(self) -> list[TicketOut]:
         """Get all tickets"""
@@ -62,4 +63,12 @@ class TicketsState(AuthState):
                         .full_name
                     )
 
-            self.tickets = tkts
+            self.tkts = tkts
+
+    def delete_ticket(self, ticket_id: str):
+        """Delete ticket"""
+
+        with rx.session() as session:
+            session.query(Ticket).where(Ticket.id == ticket_id).delete()
+            session.commit()
+        self.get_all_tickets()

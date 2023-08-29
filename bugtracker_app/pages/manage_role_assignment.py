@@ -71,11 +71,11 @@ def manage_role_assignment():
                     rx.foreach(
                         ManageRoleAssignmentState.users,
                         lambda user: rx.tr(
+                            rx.td(user.email),
+                            rx.td(user.role),
                             rx.td(
-                                user.email,
-                                rx.td(user.role),
-                                rx.td(
-                                    rx.form(
+                                rx.form(
+                                    rx.hstack(
                                         rx.select(
                                             roles,
                                             placeholder="Select role",
@@ -85,9 +85,9 @@ def manage_role_assignment():
                                             "Assign",
                                             type_="submit",
                                         ),
-                                        on_submit=lambda: ManageRoleAssignmentState.handle_role_assignment(
-                                            user.id
-                                        ),
+                                    ),
+                                    on_submit=lambda: ManageRoleAssignmentState.handle_role_assignment(
+                                        user.id
                                     ),
                                 ),
                             ),

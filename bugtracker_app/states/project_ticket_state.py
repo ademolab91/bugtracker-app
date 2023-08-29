@@ -1,10 +1,12 @@
 import reflex as rx
-from ..states import ProjectDetailsState
+
+# from .ticketsState import TicketsState
+from .project_details_state import ProjectDetailsState
 from ..models import Ticket, Project
 from .schemas import AttachmentOut, TicketHistoryOut, CommentOut
 from ..enumerations import TicketType, Priority, Status, Action
 from .manage_project_users_state import Member
-from ..models import User, TicketHistory
+from ..models import User, TicketHistory, Attachment
 
 
 class ProjectTicketState(ProjectDetailsState):
@@ -25,6 +27,9 @@ class ProjectTicketState(ProjectDetailsState):
     ticket_updated_at: str = ""
 
     new_comment: str = ""
+    attachment_form_data: dict = {}
+    fls: list[str]
+    outfiles: list[str]
 
     def get_ticket_details(self):
         """Get ticket"""
@@ -96,4 +101,70 @@ class ProjectTicketState(ProjectDetailsState):
             session.commit()
             self.comments = (
                 session.query(Comment).where(Comment.ticket_id == self.ticket_id).all()
+            )
+
+    async def handle_upload(self, files: list[rx.UploadFile]):
+        """Handle file upload"""
+
+        if not files:
+            return rx.window_alert("Please select a file to upload")
+
+        for file in files:
+            upload_data = await file.read()
+            outfile = rx.get_asset_path(file.filename)
+
+            with open(outfile, "wb") as f:
+                f.write(upload_data)
+
+            self.fls.append(file.filename)
+            self.outfiles.append(outfile)
+        return rx.window_alert("File uploaded successfully, Add description")
+
+    def handle_add_attachment_click(self, form_data: dict):
+        """Handle add attachment button click"""
+
+        self.attachment_form_data = form_data
+        if (
+            not self.fls
+            or not self.outfiles
+            or not self.attachment_form_data["description"] == ""
+        ):
+            return rx.window_alert("Please select a file to upload and a description")
+
+        for filename, outfile in zip(self.fls, self.outfiles):
+            with rx.session() as session:
+                session.add(
+                    Attachment(
+                        file_name=filename,
+                        description=self.attachment_form_data["description"],
+                        file_path=outfile,
+                        ticket_id=self.ticket_id,
+                    )
+                )
+                session.commit()
+        with rx.session() as session:
+            self.attachments = (
+                session.query(Attachment)
+                .where(Attachment.ticket_id == self.ticket_id)
+                .all()
+            )
+
+    def delete_ticket(self):
+        """Delete ticket"""
+
+        with rx.session() as session:
+            session.query(Ticket).where(Ticket.id == self.ticket_id).delete()
+            session.commit()
+        return rx.redirect("/projects/details")
+
+    def delete_attachment(self, atmnt_id: str):
+        """Delete attachment"""
+
+        with rx.session() as session:
+            session.query(Attachment).where(Attachment.id == atmnt_id).delete()
+            session.commit()
+            self.attachments = (
+                session.query(Attachment)
+                .where(Attachment.ticket_id == self.ticket_id)
+                .all()
             )

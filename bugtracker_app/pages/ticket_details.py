@@ -13,7 +13,15 @@ def ticket_core_details(**props) -> rx.Component:
             rx.text(" | "),
             rx.cond(
                 ProjectTicketState.is_admin,
-                rx.link("Edit ticket", href="/projects/details/ticket/edit"),
+                rx.hstack(
+                    rx.link("Edit ticket", href="/projects/details/ticket/edit"),
+                    rx.text(" | "),
+                    rx.button(
+                        rx.icon(tag="delete"),
+                        padding=".1em",
+                        on_click=lambda: ProjectTicketState.delete_ticket(),
+                    ),
+                ),
                 rx.cond(
                     ProjectTicketState.is_assigned_admin,
                     rx.link("Edit ticket", href="/projects/details/ticket/edit"),
@@ -171,9 +179,92 @@ def ticket_history(**props) -> rx.Component:
     )
 
 
+color = "rgb(107,99,246)"
+
+
 def attachment_section(**props) -> rx.Component:
     """Ticket attachments"""
-    return rx.text("Ticket attachments")
+    return rx.box(
+        rx.box(
+            rx.heading("Add an Attachment?"),
+            rx.hstack(
+                rx.upload(
+                    rx.vstack(
+                        rx.text("Select files"),
+                        rx.button(
+                            "Select File",
+                            color=color,
+                            bg="white",
+                            border=f"1px solid {color}",
+                        ),
+                    ),
+                    border=f"1px dotted {color}",
+                    padding=".2em",
+                ),
+                rx.vstack(
+                    rx.button(
+                        "Upload",
+                        on_click=lambda: ProjectTicketState.handle_upload(
+                            rx.upload_files()
+                        ),
+                    ),
+                    rx.foreach(ProjectTicketState.fls, lambda fl: rx.text(fl)),
+                ),
+                rx.hstack(
+                    rx.form(
+                        rx.vstack(
+                            rx.text("Add a description"),
+                            rx.input(id="description"),
+                        ),
+                        rx.button(
+                            "Add",
+                            type_="submit",
+                        ),
+                        on_submit=ProjectTicketState.handle_add_attachment_click,
+                    ),
+                ),
+            ),
+        ),
+        rx.box(
+            rx.heading("Ticket Attachments"),
+            rx.table(
+                rx.thead(
+                    rx.tr(
+                        rx.th("File"),
+                        rx.th("Uploader"),
+                        rx.th("Notes"),
+                        rx.th("Uploaded on"),
+                        rx.th(""),
+                    )
+                ),
+                rx.tbody(
+                    rx.foreach(
+                        ProjectTicketState.attachments,
+                        lambda atmnt: rx.tr(
+                            rx.td(
+                                rx.link(
+                                    atmnt.file_name,
+                                    href=atmnt.file_path,
+                                    download=atmnt.file_name,
+                                )
+                            ),
+                            rx.td(),
+                            rx.td(atmnt.description),
+                            rx.td(atmnt.created_at),
+                            rx.td(
+                                rx.button(
+                                    rx.icon(tag="delete"),
+                                    on_click=lambda: ProjectTicketState.delete_attachment(
+                                        atmnt.id
+                                    ),
+                                )
+                            ),
+                        ),
+                    )
+                ),
+            ),
+        ),
+    )
 
 
 def ticket_details():
