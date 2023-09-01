@@ -30,25 +30,21 @@ def index() -> rx.Component:
     return rx.box(
         home_header(),
         rx.vstack(
+            rx.heading("Keep track of bugs"),
+            rx.text("Try Bug tracker now"),
             rx.link(
                 "Dashboard",
                 href="/dashboard",
-            ),
-            rx.link(
-                "Manage role assignment",
-                href="/manage-role-assignments",
-            ),
-            rx.link(
-                "Manage project users",
-                href="/manage-project-users",
-            ),
-            rx.link(
-                "My projects",
-                href="/projects",
-            ),
-            rx.link(
-                "My Tickets",
-                href="/tickets",
+                padding=".7em",
+                width="200px",
+                border="1px solid black",
+                _hover={
+                    "color": "white",
+                    "background-color": "black",
+                    "text_decoration": "none",
+                },
+                margin_y=".2em",
+                text_align="center",
             ),
         ),
         display="flex",
@@ -57,6 +53,8 @@ def index() -> rx.Component:
         flex_direction="column",
         height="100vh",
         width="100vw",
+        background_color="#0093E9",
+        background_image="linear-gradient(160deg, #0093E9 0%, #80D0C7 100%)",
     )
 
 

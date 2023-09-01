@@ -38,5 +38,6 @@ def home_header(**props) -> rx.Component:
         width="100%",
         padding=".2em",
         box_shadow="6px 20px 25px -21px rgba(40, 40, 40, 0.78)",
+        # background_color="white",
         **props,
     )

@@ -75,7 +75,10 @@ class DashBoardState(State):
             submitters_ids = list(set(submitters_ids))
             for submitter_id in submitters_ids:
                 self.ticket_submitters.append(
-                    session.query(User).where(User.id == submitter_id[0]).first().full_name
+                    session.query(User)
+                    .where(User.id == submitter_id[0])
+                    .first()
+                    .full_name
                 )
                 self.ticket_submitters_values.append(
                     session.query(Ticket)
@@ -86,25 +89,9 @@ class DashBoardState(State):
     def prepare_dashboard(self):
         """Prepare dashboard for view"""
 
-        self.ticket_types = []
-        self.ticket_types_values = []
-        self.ticket_statuses = []
-        self.ticket_statuses_values = []
-        self.ticket_submitters = []
-        self.ticket_submitters_values = []
-        self.priorities = []
-        self.priorities_values = []
-
-        self.check_login()
+        if not self.logged_in:
+            return rx.redirect("/login")
         self.get_ticket_priority_params()
         self.get_ticket_type_params()
         self.get_ticket_status_params()
         self.get_ticket_submitter_params()
-        # print("Priorities: ", self.priorities)
-        # print("Priorities_values", self.priorities_values)
-        # print("Ticket_types: ", self.ticket_types)
-        # print("Ticket_types_values: ", self.ticket_types_values)
-        # print("Ticket_statuses: ", self.ticket_statuses)
-        # print("Ticket_statuses_values: ", self.ticket_statuses_values)
-        # print("Ticket_submitters: ", self.ticket_submitters)
-        # print("Ticket_submitters_values: ", self.ticket_submitters_values)
