@@ -18,7 +18,9 @@ from .states import (
     ProjectDetailsState,
     ProjectTicketState,
     TicketsState,
+    ManageProjectUsersState,
 )
+from .pages.manage_role_assignment import ManageRoleAssignmentState
 from .components.components import home_header
 
 import reflex as rx
@@ -64,7 +66,9 @@ app.add_page(index)
 app.add_page(login_page, route="/login")
 app.add_page(dashboard, route="/dashboard", on_load=DashBoardState.prepare_dashboard())
 app.add_page(
-    manage_project_users, route="/manage-project-users", on_load=State.check_login()
+    manage_project_users,
+    route="/manage-project-users",
+    on_load=ManageProjectUsersState.check_login(),
 )
 app.add_page(my_projects, route="/projects", on_load=State.check_login())
 app.add_page(
@@ -81,7 +85,7 @@ app.add_page(tickets, route="/tickets", on_load=TicketsState.get_all_tickets())
 app.add_page(
     manage_role_assignment,
     route="/manage-role-assignments",
-    on_load=State.check_login(),
+    on_load=ManageRoleAssignmentState.check_login(),
 )
 app.add_page(edit_project, route="/projects/details/edit", on_load=State.check_login())
 app.add_page(

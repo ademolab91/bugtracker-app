@@ -13,6 +13,10 @@ class ManageRoleAssignmentState(AuthState):
 
     option: str = "No selection yet"
 
+    def check_login(self):
+        if not self.logged_in or not self.is_admin_or_assigned_admin:
+            return rx.redirect("/dashboard")
+
     @rx.var
     def users(self) -> list[User]:
         """Get users"""

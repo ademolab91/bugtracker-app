@@ -1,4 +1,4 @@
-from .base import State
+from ..states import AuthState
 from ..models import Project, User
 from ..enumerations import Role
 import reflex as rx
@@ -22,7 +22,7 @@ class ProjectSchema(rx.Base):
     members: list[Member]
 
 
-class ManageProjectUsersState(State):
+class ManageProjectUsersState(AuthState):
     """Manage project users state"""
 
     selected_project_members: list[User] = []
@@ -32,6 +32,10 @@ class ManageProjectUsersState(State):
     # For viewing and removing users
     project_members_in_view: list[User] = []
     project_in_view: str = None
+
+    def check_login(self):
+        if not self.logged_in or not self.is_admin_or_assigned_admin:
+            return rx.redirect("/dashboard")
 
     def handle_remove_user(self, user_id: str):
         """Handle remove user"""

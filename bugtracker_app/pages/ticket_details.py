@@ -7,7 +7,7 @@ def ticket_core_details(**props) -> rx.Component:
     """Ticket core details"""
 
     return rx.box(
-        rx.heading("Details for ", ProjectTicketState.ticket_title, size="md"),
+        rx.heading("Details for ", ProjectTicketState.ticket_title),
         rx.hstack(
             rx.link("Back to project", href="/projects/details"),
             rx.text(" | "),
@@ -111,7 +111,7 @@ def comment_section(**props) -> rx.Component:
     """Add and read comments"""
 
     return rx.box(
-        rx.heading("Add a comment", size="md"),
+        rx.heading("Add a comment"),
         rx.form(
             rx.text_area(
                 placeholder="Add a comment",
@@ -132,6 +132,7 @@ def comment_section(**props) -> rx.Component:
                     rx.th("Commenter"),
                     rx.th("Message"),
                     rx.th("Commented on"),
+                    rx.th(""),
                 ),
             ),
             rx.tbody(
@@ -141,6 +142,17 @@ def comment_section(**props) -> rx.Component:
                         rx.td(comment.commenter.full_name),
                         rx.td(comment.content),
                         rx.td(comment.created_at),
+                        rx.cond(
+                            ProjectTicketState.is_admin_or_assigned_admin,
+                            rx.td(
+                                rx.button(
+                                    rx.icon(tag="delete"),
+                                    on_click=lambda: ProjectTicketState.delete_comment(
+                                        comment.id
+                                    ),
+                                )
+                            ),
+                        ),
                     ),
                 ),
             ),
@@ -251,13 +263,16 @@ def attachment_section(**props) -> rx.Component:
                             rx.td(),
                             rx.td(atmnt.description),
                             rx.td(atmnt.created_at),
-                            rx.td(
-                                rx.button(
-                                    rx.icon(tag="delete"),
-                                    on_click=lambda: ProjectTicketState.delete_attachment(
-                                        atmnt.id
-                                    ),
-                                )
+                            rx.cond(
+                                ProjectTicketState.is_admin_or_assigned_admin,
+                                rx.td(
+                                    rx.button(
+                                        rx.icon(tag="delete"),
+                                        on_click=lambda: ProjectTicketState.delete_attachment(
+                                            atmnt.id
+                                        ),
+                                    )
+                                ),
                             ),
                         ),
                     )

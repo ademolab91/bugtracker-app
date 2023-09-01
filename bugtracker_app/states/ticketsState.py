@@ -56,12 +56,13 @@ class TicketsState(ProjectDetailsState):
                         .first()
                         .title
                     )
-                    tkt.assigned_developer_name = (
-                        session.query(User)
-                        .where(User.id == tkt.assigned_developer_id)
-                        .first()
-                        .full_name
-                    )
+                    if tkt.assigned_developer_id != None:
+                        tkt.assigned_developer_name = (
+                            session.query(User)
+                            .where(User.id == tkt.assigned_developer_id)
+                            .first()
+                            .full_name
+                        )
 
             self.tkts = tkts
 

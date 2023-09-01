@@ -6,11 +6,14 @@ from ..states import MyProjectState
 def my_projects():
     return base_layout(
         rx.box(
-            rx.button(
-                "Create a new project",
-                width="20em",
-                padding="1em",
-                on_click=MyProjectState.change,
+            rx.cond(
+                MyProjectState.is_admin_or_assigned_admin,
+                rx.button(
+                    "Create a new project",
+                    width="20em",
+                    padding="1em",
+                    on_click=MyProjectState.change,
+                ),
             ),
             rx.modal(
                 rx.modal_overlay(

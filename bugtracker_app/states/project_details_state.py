@@ -11,7 +11,7 @@ class TicketOut(rx.Base):
     id: str
     title: str
     submitter: Member
-    assigned_developer: Member
+    assigned_developer: Member | None
     ticket_type: TicketType
     priority: Priority
     status: Status
@@ -26,6 +26,33 @@ class ProjectDetailsState(MyProjectState):
     members: list[User] = []
 
     ticket_id: str = ""
+
+    show_add_ticket_modal: bool = False
+
+    ticket_type_for_new_ticket: TicketType = TicketType.BUG_ERROR
+    new_ticket_description: str = ""
+    new_ticket_title: str = ""
+
+    def change_add_ticket_modal_state(self):
+        self.show_add_ticket_modal = not (self.show_add_ticket_modal)
+
+    def handle_add_ticket_submit(self):
+        with rx.session() as session:
+            ticket = Ticket(
+                title=self.new_ticket_title,
+                description=self.new_ticket_description,
+                ticket_type=self.ticket_type_for_new_ticket,
+                project_id=self.project_id,
+                submitter_id=self.user.id,
+                priority=Priority.NONE,
+                status=Status.OPEN,
+            )
+            session.add(ticket)
+            session.commit()
+        self.ticket_type_for_new_ticket = TicketType.BUG_ERROR
+        self.new_ticket_description = ""
+        self.new_ticket_title = ""
+        self.change_add_ticket_modal_state()
 
     def get_project_details(self) -> Project:
         """Project."""
@@ -44,9 +71,10 @@ class ProjectDetailsState(MyProjectState):
             tickets = session.query(Ticket).filter_by(project_id=self.project_id).all()
             for ticket in tickets:
                 ticket.submitter = session.query(User).get(ticket.submitter_id)
-                ticket.assigned_developer = session.query(User).get(
-                    ticket.assigned_developer_id
-                )
+                if ticket.assigned_developer_id != None:
+                    ticket.assigned_developer = session.query(User).get(
+                        ticket.assigned_developer_id
+                    )
             return tickets
 
     def set_ticket_id(self, ticket_id: str):

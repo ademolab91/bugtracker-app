@@ -44,7 +44,15 @@ def tickets():
                                         ),
                                     ),
                                     rx.text(" | "),
-                                    rx.button(rx.icon(tag="delete"), on_click=lambda: TicketsState.delete_ticket(ticket.id))
+                                    rx.cond(
+                                        TicketsState.is_admin_or_assigned_admin,
+                                        rx.button(
+                                            rx.icon(tag="delete"),
+                                            on_click=lambda: TicketsState.delete_ticket(
+                                                ticket.id
+                                            ),
+                                        ),
+                                    ),
                                 ),
                             ),
                         ),

@@ -6,19 +6,25 @@ links = [
     rx.link(
         rx.icon(tag="link"), "Dashboard", href="/dashboard", padding="1em", width="80%"
     ),
-    rx.link(
-        rx.icon(tag="link"),
-        "Manage Role Assignment",
-        href="/manage-role-assignments",
-        padding="1em",
-        width="100%",
+    rx.cond(
+        AuthState.is_admin_or_assigned_admin,
+        rx.link(
+            rx.icon(tag="link"),
+            "Manage Role Assignment",
+            href="/manage-role-assignments",
+            padding="1em",
+            width="100%",
+        ),
     ),
-    rx.link(
-        rx.icon(tag="link"),
-        "Manage Project Users",
-        href="/manage-project-users",
-        padding="1em",
-        width="100%",
+    rx.cond(
+        AuthState.is_admin_or_assigned_admin,
+        rx.link(
+            rx.icon(tag="link"),
+            "Manage Project Users",
+            href="/manage-project-users",
+            padding="1em",
+            width="100%",
+        ),
     ),
     rx.link(
         rx.icon(tag="link"),

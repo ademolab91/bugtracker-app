@@ -6,7 +6,7 @@ from ..models import Ticket, Project
 from .schemas import AttachmentOut, TicketHistoryOut, CommentOut
 from ..enumerations import TicketType, Priority, Status, Action
 from .manage_project_users_state import Member
-from ..models import User, TicketHistory, Attachment
+from ..models import User, TicketHistory, Attachment, Comment
 
 
 class ProjectTicketState(ProjectDetailsState):
@@ -44,9 +44,10 @@ class ProjectTicketState(ProjectDetailsState):
             self.ticket_priority = ticket.priority
             self.ticket_ticket_type = ticket.ticket_type
             self.ticket_status = ticket.status
-            self.ticket_assigned_developer = (
-                session.query(User).get(ticket.assigned_developer_id).email
-            )
+            if ticket.assigned_developer_id != None:
+                self.ticket_assigned_developer = (
+                    session.query(User).get(ticket.assigned_developer_id).full_name
+                )
             self.ticket_submitter = (
                 session.query(User).get(ticket.submitter_id).full_name
             )
@@ -127,7 +128,7 @@ class ProjectTicketState(ProjectDetailsState):
         if (
             not self.fls
             or not self.outfiles
-            or not self.attachment_form_data["description"] == ""
+            or self.attachment_form_data["description"] == ""
         ):
             return rx.window_alert("Please select a file to upload and a description")
 
@@ -148,6 +149,7 @@ class ProjectTicketState(ProjectDetailsState):
                 .where(Attachment.ticket_id == self.ticket_id)
                 .all()
             )
+        self.fls = self.outfiles = []
 
     def delete_ticket(self):
         """Delete ticket"""
@@ -167,4 +169,13 @@ class ProjectTicketState(ProjectDetailsState):
                 session.query(Attachment)
                 .where(Attachment.ticket_id == self.ticket_id)
                 .all()
+            )
+
+    def delete_comment(self, comment_id: str):
+        with rx.session() as session:
+            comment = session.query(Comment).get(comment_id)
+            session.delete(comment)
+            session.commit()
+            self.comments = (
+                session.query(Comment).where(Comment.ticket_id == self.ticket_id).all()
             )

@@ -16,6 +16,11 @@ class AuthState(State):
     role: Optional[Role]
 
     @rx.var
+    def is_admin_or_assigned_admin(self):
+        """Check if user is admin or assigned admin"""
+        return self.is_admin or self.is_assigned_admin
+
+    @rx.var
     def is_admin(self):
         """Check if user is admin"""
         return self.role == Role.ADMIN
